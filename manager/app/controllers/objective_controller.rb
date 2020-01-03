@@ -1,0 +1,2 @@
+class ObjectiveController < ApplicationController
+end

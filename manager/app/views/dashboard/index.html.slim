@@ -1,0 +1,103 @@
+.navbar.navbar-default
+
+h1.p-3 Dashboard
+.row.p-3
+  .col-sm-3
+    .card
+      .card-header
+        h2 Todo
+      .card-body
+        table.table.table-bordered
+          tbody
+            - @todos.each.with_index do |todo, index|
+              tr
+                td
+                  - if todo.completed
+                    s #{index+1}. #{todo.description} <br>
+                  - else
+                    b #{index+1}. #{todo.description} <br>
+                - todo.children.each.with_index do |child, index_two|
+                  tr
+                    td
+                      - if todo.completed
+                        s #{index+1}. #{todo.description} <br>
+                      - else
+                        b #{index+1}. #{todo.description} <br>
+  .col-sm-3
+    .card
+      .card-header
+          h2 Objectives
+      .card-body
+        h4 
+          u Long Term
+        hr
+          ul
+            - Objective.long_term.each do |objective|
+              li #{objective.name} <br>
+              - if objective.description
+                span #{objective.description} <br>
+        hr
+        h4 
+          u Medium Term
+        hr
+          ul
+          - Objective.medium_term.each do |objective|
+            li #{objective.name} <br>
+            - if objective.description
+              span #{objective.description} <br>
+        hr
+        h4 
+          u Short Term
+        hr
+          ul
+            - Objective.short_term.each do |objective|
+              - if objective.description
+                li title="#{objective.description}" 
+                  u #{objective.name} <br>
+              - else
+                li #{objective.name} <br>
+        hr
+  .col-sm-3
+    .card
+      .card-header
+        h2 Relationships
+      .card-body
+        table.table.table-bordered
+          thead
+            tr
+              th Name
+              th Last Seen
+              th Last Spoke
+          tbody
+            - @relationships.each do |relationship|
+              tr
+                td #{relationship.name} <br>
+                td
+                  - if relationship.last_seen
+                    span #{time_ago_in_words(relationship.last_seen)} ago <br>
+                td
+                  - if relationship.last_communicated
+                    span #{time_ago_in_words(relationship.last_communicated)} ago <br>
+  .col-sm-3
+    .card
+      .card-header
+        h2 Exercise
+      .card-body
+        table.table.table-bordered.text-center
+          thead
+            tr
+              th Date
+              th Satisfaction
+          tbody
+            - 5.times do |i|
+              tr
+                - day = ExerciseDay.find_or_create_by(created_at: Date.today - i.days)
+                td #{day.created_at.strftime('%Y-%m-%d')} 
+                td #{day.satisfaction} / 5
+
+.row.p-3
+  .col-sm-3
+    .card
+      .card-header
+        h2 Credits
+      .card-body

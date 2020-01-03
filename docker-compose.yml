@@ -1,0 +1,22 @@
+version: "3.5"
+services:
+  manager:
+    build: manager
+    image: oddballgreg/lifemanager
+    command: bin/rails s
+    volumes:
+      - ./manager:/src/app
+      - ./box:/box:delegated
+    networks:
+      manager-net:
+    ports:
+      - 3000:3000
+  postgres:
+    image: postgres:11.2-alpine
+    volumes:
+      - ./postgres:/var/lib/postgresql/data
+    networks:
+      manager-net:
+
+networks:
+  manager-net:
