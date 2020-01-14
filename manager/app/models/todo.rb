@@ -3,4 +3,10 @@ class Todo < ApplicationRecord
   has_many :children, class_name: 'Todo', foreign_key: 'parent_id'
 
   validates :description, presence: true
+
+  scope :like, -> (description) { where("description ILIKE ?", "%#{description}%")}
+
+  def completed!
+    update(completed: true)
+  end
 end

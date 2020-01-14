@@ -11,6 +11,8 @@ services:
       manager-net:
     ports:
       - 3000:3000
+    extra_hosts:
+      - rubygems.org:151.101.64.70
   postgres:
     image: postgres:11.2-alpine
     volumes:

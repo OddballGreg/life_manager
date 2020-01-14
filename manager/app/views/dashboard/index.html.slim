@@ -9,20 +9,21 @@ h1.p-3 Dashboard
       .card-body
         table.table.table-bordered
           tbody
-            - @todos.each.with_index do |todo, index|
+            - @todos.each do |todo|
               tr
                 td
                   - if todo.completed
-                    s #{index+1}. #{todo.description} <br>
+                    s #{todo.id}. #{todo.description} <br>
                   - else
-                    b #{index+1}. #{todo.description} <br>
+                    b title='Completed?' = link_to("#{todo.id}. #{todo.description}", todo_path(todo, params: {completed: true}), method: :patch)
+                    br
                 - todo.children.each.with_index do |child, index_two|
                   tr
                     td
-                      - if todo.completed
-                        s #{index+1}. #{todo.description} <br>
+                      - if child.completed
+                        s #{child.id}. #{child.description} <br>
                       - else
-                        b #{index+1}. #{todo.description} <br>
+                        b #{child.id}. #{child.description} <br>
   .col-sm-3
     .card
       .card-header
@@ -31,16 +32,16 @@ h1.p-3 Dashboard
         h4 
           u Long Term
         hr
-          ul
-            - Objective.long_term.each do |objective|
-              li #{objective.name} <br>
-              - if objective.description
-                span #{objective.description} <br>
+        ul
+          - Objective.long_term.each do |objective|
+            li #{objective.name} <br>
+            - if objective.description
+              span #{objective.description} <br>
         hr
         h4 
           u Medium Term
         hr
-          ul
+        ul
           - Objective.medium_term.each do |objective|
             li #{objective.name} <br>
             - if objective.description
@@ -49,13 +50,13 @@ h1.p-3 Dashboard
         h4 
           u Short Term
         hr
-          ul
-            - Objective.short_term.each do |objective|
-              - if objective.description
-                li title="#{objective.description}" 
-                  u #{objective.name} <br>
-              - else
-                li #{objective.name} <br>
+        ul
+          - Objective.short_term.each do |objective|
+            - if objective.description
+              li title="#{objective.description}" 
+                u #{objective.name} <br>
+            - else
+              li #{objective.name} <br>
         hr
   .col-sm-3
     .card
@@ -78,6 +79,7 @@ h1.p-3 Dashboard
                 td
                   - if relationship.last_communicated
                     span #{time_ago_in_words(relationship.last_communicated)} ago <br>
+        span And #{Relationship.count - 10} more...
   .col-sm-3
     .card
       .card-header
@@ -89,7 +91,7 @@ h1.p-3 Dashboard
               th Date
               th Satisfaction
           tbody
-            - 5.times do |i|
+            - 10.times do |i|
               tr
                 - day = ExerciseDay.find_or_create_by(created_at: Date.today - i.days)
                 td #{day.created_at.strftime('%Y-%m-%d')} 
@@ -101,3 +103,23 @@ h1.p-3 Dashboard
       .card-header
         h2 Credits
       .card-body
+  .col-sm-3
+    .card
+      .card-header
+        h2 Concerns
+      .card-body
+        table.table.table-bordered
+          tbody
+            - @concerns.each do |concern|
+              tr
+                td
+                  p #{concern.id}. #{concern.description}
+                td
+                  p = concern.urgency.humanize
+                td
+                  p = concern.importance.humanize
+                  / - if concern.completed
+                    s #{concern.id}. #{concern.description} <br>
+                  / - else
+                    b title='Completed?' = link_to("#{concern.id}. #{concern.description}", concern_path(concern, params: {completed: true}), method: :patch)
+                    br
