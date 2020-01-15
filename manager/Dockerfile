@@ -1,17 +1,14 @@
-FROM ruby:2.6.5-alpine
-RUN apk add --update \
-  build-base \
-  libxml2-dev \
-  libxslt-dev \
-  sqlite-dev \
-  postgresql-dev \
-  git \
-  nodejs \
-  yarn \
-  tzdata \
-  && rm -rf /var/cache/apk/*
+FROM ruby:2.6.5-alpine as dev
+COPY .build-deps /
+RUN cat .build-deps | xargs apk add
 RUN mkdir -p /src/app
 WORKDIR /src/app
-COPY Gemfile* ./
-ENV BUNDLE_PATH /box
-ENV PATH="/box/bin:${PATH}"
+ENV BUNDLE_PATH=/bundle \
+    BUNDLE_BIN=/bundle/bin \
+    GEM_HOME=/bundle
+ENV PATH="${BUNDLE_BIN}:${PATH}"
+
+FROM dev AS ci
+COPY Gemfile Gemfile.lock ./
+RUN bundle install --jobs 20 --retry 5
+COPY . ./

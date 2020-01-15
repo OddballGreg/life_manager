@@ -1,14 +1,19 @@
 version: "3.5"
 services:
   manager:
-    build: manager
-    image: oddballgreg/lifemanager
-    command: bin/rails s
+    build:
+      context: ./manager
+      target: dev
+    stdin_open: true
+    tty: true
+    command: bundle exec rails s
     volumes:
       - ./manager:/src/app
-      - ./box:/box:delegated
+      - bundle:/bundle
     networks:
       manager-net:
+    depends_on:
+      - postgres
     ports:
       - 3000:3000
     extra_hosts:
@@ -22,3 +27,6 @@ services:
 
 networks:
   manager-net:
+
+volumes:
+  bundle:

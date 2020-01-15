@@ -1,0 +1,13 @@
+postgresql-dev
+tzdata
+libxml2-dev
+libxslt-dev
+build-base
+libxml2-dev
+libxslt-dev
+sqlite-dev
+postgresql-dev
+git
+nodejs
+yarn
+tzdata
